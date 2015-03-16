@@ -1,33 +1,126 @@
 
+import java.awt.*;
+import java.awt.geom.*;
+
 /**
- * Write a description of class Boxball here.
+ * Class BouncingBall - a graphical ball that observes the effect of gravity. The ball
+ * has the ability to move. Details of movement are determined by the ball itself. It
+ * will fall downwards, accelerating with time due to the effect of gravity, and bounce
+ * upward again when hitting the ground.
+ *
+ * This movement can be initiated by repeated calls to the "move" method.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Michael Kölling (mik)
+ * @author David J. Barnes
+ * @author Bruce Quig
+ *
+ * @version 2011.07.31
  */
-public class Boxball
+
+public class BoxBall
 {
-    // instance variables - replace the example below with your own
-    private int x;
+    private static final int GRAVITY = 3;  // effect of gravity
+
+    private int ballDegradation = 2;
+    private Ellipse2D.Double circle;
+    private Color color;
+    private int diameter;
+    private int xPosition;
+    private int yPosition;
+    private final int bottomWall;          // y position of ground
+    private final int topWall;             // y postion of top wall
+    private final int leftWall;            // x position of left wall 
+    private final int rightWall;           // x position of right wall
+    private Canvas canvas;
+    private int ySpeed = 1;                // initial downward speed
+    private int xspeed = 3;
 
     /**
-     * Constructor for objects of class Boxball
+     * Constructor for objects of class BouncingBall
+     *
+     * @param xPos  the horizontal coordinate of the ball
+     * @param yPos  the vertical coordinate of the ball
+     * @param ballDiameter  the diameter (in pixels) of the ball
+     * @param ballColor  the color of the ball
+     * @param groundPos  the position of the ground (where the wall will bounce)
+     * @param drawingCanvas  the canvas to draw this ball on
      */
-    public Boxball()
+    public BoxBall(int xPos, int yPos, int ballDiameter, Color ballColor,
+                        int groundPos, Canvas drawingCanvas)
     {
-        // initialise instance variables
-        x = 0;
+        xPosition = xPos;
+        yPosition = yPos;
+        color = ballColor;
+        diameter = ballDiameter;
+        groundPosition = groundPos;
+        canvas = drawingCanvas;
+        leftWall = 0;
+        rightWall = 600;
+        topWall = 0;
+        bottomWall = 500;
     }
 
     /**
-     * An example of a method - replace this comment with your own
-     * 
-     * @param  y   a sample parameter for a method
-     * @return     the sum of x and y 
-     */
-    public int sampleMethod(int y)
+     * Draw this ball at its current position onto the canvas.
+     **/
+    public void draw()
     {
-        // put your code here
-        return x + y;
+        canvas.setForegroundColor(color);
+        canvas.fillCircle(xPosition, yPosition, diameter);
+    }
+
+    /**
+     * Erase this ball at its current position.
+     **/
+    public void erase()
+    {
+        canvas.eraseCircle(xPosition, yPosition, diameter);
+    }    
+
+    /**
+     * Move this ball according to its position and speed and redraw.
+     **/
+    public void move()
+    {
+        // remove from canvas at the current position
+        //erase();
+            
+        // compute new position
+        //ySpeed += GRAVITY;
+        yPosition += ySpeed;
+        xPosition += xSpeed;
+
+        // check if it has hit the ground
+        //if(yPosition >= (groundPosition - diameter) && ySpeed > 0) {
+//            yPosition = (int)(groundPosition - diameter);
+//            ySpeed = -ySpeed + ballDegradation; 
+//        }
+
+        // WALL CHECKS
+        if (xPosition < leftWall) {
+            xSpeed = -xSpeed;
+        }
+        
+        if (xPosition > rightWall) {
+            xSpeed = -xSpeed;
+        }
+        // draw again at new position
+        draw();
+    }    
+
+    /**
+     * return the horizontal position of this ball
+     */
+    public int getXPosition()
+    {
+        return xPosition;
+    }
+
+    /**
+     * return the vertical position of this ball
+     */
+    public int getYPosition()
+    {
+        return yPosition;
     }
 }
